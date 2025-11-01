@@ -1,7 +1,6 @@
 #!/bin/bash
 #add fix to exercise6-fix here
 
-#!/bin/bash
 
 # Ensure at least 2 arguments are provided
 if [ "$#" -lt 2 ]; then
