@@ -1,7 +1,6 @@
 #!/bin/bash
 #add fix to exercise6-fix here
 
-
 # Ensure at least 2 arguments are provided
 if [ "$#" -lt 2 ]; then
   echo "Usage: $0 <file1> [file2 ... fileN] <destination_folder>"
@@ -25,13 +24,14 @@ fi
 
 # Initialize total bytes counter
 total_bytes=0
-
+SKIP=$#
+COUNT=1
 # Iterate over all arguments except the last one
-for file in "${@:1:$#-1}"; do
-  if [ ! -f "$file" ]; then
-    echo "Warning: '$file' not found or not a regular file, skipping."
-    continue
-  fi
+for file in "$@"; do
+  if [ "$COUNT" -ne "$SKIP" ]; then
+    if [ ! -f "$file" ]; then
+      echo "Warning: '$file' not found or not a regular file, skipping."
+    else
 
   # Add file size
   size=$(stat -c%s "$file")
@@ -40,9 +40,12 @@ for file in "${@:1:$#-1}"; do
   # Copy to destination on the other server
   scp -q "$file" "${dest_server}:${dest_folder}/"
   if [ $? -ne 0 ]; then
-    echo "Error copying '$file' to ${dest_server}:${dest_folder}" >&2
+    echo "Error copying '$file' to ${dest_server}:${dest_folder}"
     exit 1
   fi
+  fi
+  fi
+  ((COUNT++))
 done
 
 # Print only the total number of bytes copied (no text)
